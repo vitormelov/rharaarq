@@ -803,14 +803,21 @@ div#preloader {
 /*--------------------------------------------------------------
 # About
 --------------------------------------------------------------*/
-.about-area {
+/* Background compartilhado para About, Services, Portfolio e Contact */
+.about-area,
+.services-area,
+.portfolio-area,
+.contact-area {
   background: url("../img/background/tecido-bg.jpg") no-repeat center center;
   background-size: cover;
   background-attachment: fixed;
   position: relative;
 }
 
-.about-area::before {
+.about-area::before,
+.services-area::before,
+.portfolio-area::before,
+.contact-area::before {
   content: '';
   position: absolute;
   top: 0;
@@ -821,7 +828,10 @@ div#preloader {
   z-index: 0;
 }
 
-.about-area .container {
+.about-area .container,
+.services-area .container,
+.portfolio-area .container,
+.contact-area .container {
   position: relative;
   z-index: 1;
 }
@@ -862,7 +872,7 @@ div#preloader {
 }
 
 .section-headline.services-head>h2 {
-  margin-bottom: 25px;
+  margin-bottom: 60px;
 }
 
 .services-details {
@@ -1628,6 +1638,11 @@ div#preloader {
 .contact-area {
   height: auto;
   width: 100%;
+}
+
+.contact-inner {
+  position: relative;
+  z-index: 1;
 }
 
 .contact-content {
