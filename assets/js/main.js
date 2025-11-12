@@ -187,9 +187,13 @@
   window.addEventListener('load', () => {
     let portfolioContainer = select('.portfolio-container');
     if (portfolioContainer) {
+      // Adicionar classe para remover display:none inicial
+      portfolioContainer.classList.add('isotope');
+      
       let portfolioIsotope = new Isotope(portfolioContainer, {
         itemSelector: '.portfolio-item',
-        layoutMode: 'fitRows'
+        layoutMode: 'fitRows',
+        filter: '.filter-banheiro' // Filtrar apenas banheiro inicialmente
       });
 
       let portfolioFilters = select('#portfolio-flters li', true);
@@ -232,6 +236,75 @@
       type: 'bullets',
       clickable: true
     }
+  });
+
+  /**
+   * Lazy Loading Images Optimization
+   */
+  if ('loading' in HTMLImageElement.prototype) {
+    // Adicionar lazy loading em todas as imagens do portfolio que não têm
+    const portfolioImages = document.querySelectorAll('.portfolio-item img:not([loading])');
+    portfolioImages.forEach(img => {
+      img.setAttribute('loading', 'lazy');
+    });
+
+    const images = document.querySelectorAll('img[loading="lazy"]');
+    images.forEach(img => {
+      // Adicionar placeholder enquanto carrega
+      if (!img.complete) {
+        img.style.opacity = '0';
+        img.style.transition = 'opacity 0.3s ease';
+      }
+      
+      img.addEventListener('load', function() {
+        this.classList.add('loaded');
+        this.style.opacity = '1';
+      }, { once: true });
+      
+      // Se já está carregada
+      if (img.complete) {
+        img.classList.add('loaded');
+        img.style.opacity = '1';
+      }
+    });
+  } else {
+    // Fallback para browsers antigos
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js';
+    document.body.appendChild(script);
+  }
+
+  /**
+   * Intersection Observer para animações suaves
+   */
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, observerOptions);
+
+  // Observar elementos do portfolio
+  document.querySelectorAll('.portfolio-item').forEach(item => {
+    item.style.opacity = '0';
+    item.style.transform = 'translateY(20px)';
+    item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(item);
+  });
+
+  // Observar serviços
+  document.querySelectorAll('.services-details').forEach(item => {
+    item.style.opacity = '0';
+    item.style.transform = 'translateY(20px)';
+    item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(item);
   });
 
 })()
